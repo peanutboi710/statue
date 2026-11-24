@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>김해송 · 관객이 보는 쪽을 만듭니다</title>
+<meta name="description" content="무대 조연출 출신 개발자 김해송의 프론트엔드 포트폴리오. 내Law남불의 화면을 프레임워크 없이 만들었습니다.">
+<meta name="theme-color" content="#0b0a09">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@200;300;400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500&family=Nanum+Brush+Script&display=swap">
+<link rel="stylesheet" href="css/demos.css">
+<link rel="stylesheet" href="css/statue.css?v=20261122e">
+</head>
+<body>
+<a class="skip" href="#copy-1">본문으로 건너뛰기</a>
+
+<div class="stage" id="stage">
+  <div class="plate" id="plateA">
+    <div class="sky" id="sky" aria-hidden="true"><i class="sky-tex" id="skyTex"></i></div>
+    <svg id="svA" class="sv"></svg>
+    <canvas id="film" class="sv" aria-hidden="true"></canvas>
+    <svg id="svC" class="sv" aria-hidden="true"></svg>
+    <svg id="svTop" class="sv" aria-hidden="true"></svg>
+    <div class="wl" id="wl">
+      <i class="it flare" id="itFlare" aria-hidden="true"><b></b></i>
+      <div class="it demo dlg-w" id="itDlg" data-demo="dialogue">
+        <div class="native">
+          <p class="demo-cap">축소판 무대 · 눌러서 넘기기, 키보드는 Enter</p>
+          <div class="dlg" tabindex="0" role="group" aria-label="대사 데모. 누르거나 Enter로 다음 대사">
+            <img class="dlg-bg" src="assets/art/court.webp" alt="">
+            <img class="dlg-ch left" alt="" data-slot="left">
+            <img class="dlg-ch right" alt="" data-slot="right">
+            <div class="dlg-box"><span class="dlg-name"></span><p class="dlg-line" aria-live="polite"></p><span class="dlg-next" aria-hidden="true">▸</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="it demo paper-w" id="itPaper" data-demo="paper">
+        <div class="native">
+          <p class="demo-cap">원본 pageTurn.js 그대로 · 면 탭이나 화살표 키</p>
+          <div class="np-wrap">
+            <div class="np-tabs" role="tablist" aria-label="신문 면"></div>
+            <article class="np" aria-live="polite"></article>
+          </div>
+        </div>
+      </div>
+      <div class="it demo sig-w" id="itSlab" data-demo="sign">
+        <div class="native">
+          <form class="sig" novalidate>
+            <label for="sigName">이름</label>
+            <input id="sigName" maxlength="12" autocomplete="off" spellcheck="false" placeholder="HelloWorld">
+            <div class="sig-line"><span class="sig-x" aria-hidden="true">서명</span><div class="sig-slot"></div></div>
+            <div class="sig-row"><button type="submit">서명하고 확정</button><button type="button" class="ghost" hidden>다시 해 보기</button></div>
+            <p class="sig-msg" role="status" aria-live="polite"></p>
+          </form>
+          <p class="demo-cap">원본 signature.js 그대로</p>
+        </div>
+      </div>
+      <div class="it roll" id="itRoll">
+        <p class="roll-cap">그 밖의 작업</p>
+        <ul>
+          <li><b>MatchEAT</b><small>B2B 케이터링 매칭 · 4인 · 팀 리딩</small><span>웹소켓(STOMP) 실시간 채팅 안에서 견적을 다루게 했습니다. AI 견적 요약은 합의된 값만 반영하고 서버에서 다시 검증합니다.</span></li>
+          <li><b>StockSim</b><small>주식 시뮬레이터 백엔드 · 4인</small><span>액세스 30분, 리프레시 14일로 토큰을 나누고 리프레시를 DB에 저장해 재발급과 로그아웃을 만들었습니다.</span></li>
+        </ul>
+      </div>
+      <div class="it roll" id="itRoll2">
+        <ul>
+          <li><b>쓰는 기술</b><small>화면 · 서버</small><span>HTML · CSS · JavaScript(ES 모듈) · SVG · Web Animations API / Java 17 · Spring Boot · JPA · PostgreSQL</span></li>
+          <li><b>배운 곳</b><small></small><span>프로그래머스 데브코스 생성형 AI 활용 백엔드 개발 (2026) · 서경대학교 모델연기전공 졸업 (2025)</span></li>
+        </ul>
+      </div>
+    </div>
+    <canvas id="filmTop" class="sv" aria-hidden="true"></canvas>
+  </div>
+  <div class="plate blueprint" id="plateB" hidden><svg id="svB" class="sv"></svg><canvas id="bpFilm" class="sv" aria-hidden="true"></canvas></div>
+  <div class="col" id="col" hidden></div>
+  <div class="veil" id="veil" aria-hidden="true"></div>
+  <div class="iris" id="iris" aria-hidden="true" hidden></div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- 화면 틀: 안내선 · 별 · 표지 · 막 레일 -->
+<div class="ov" id="ov">
+  <span class="gv" style="left:var(--v1)"><i style="animation-delay:.2s"></i></span>
+  <span class="gv gv--r" style="left:var(--v2)"><i style="animation-delay:.3s"></i></span>
+  <span class="gh" style="top:var(--h1)"><i style="animation-delay:.25s"></i></span>
+  <span class="gh" style="top:var(--h2)"><i style="animation-delay:.4s"></i></span>
+  <span class="fill" id="fill" aria-hidden="true"></span>
+  <i class="gx" style="left:var(--v1);top:var(--h2)"><span style="animation-delay:1.05s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></span></i>
+  <i class="gx" style="left:var(--v2);top:var(--h2)"><span style="animation-delay:1.18s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></span></i>
+  <i class="gx gx--lock" style="left:var(--v1);top:var(--h1)"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></span></i>
+  <i class="gx gx--lock" style="left:var(--v2);top:var(--h1)"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></span></i>
+  <a class="mark" href="#" data-go="0" aria-label="김해송, 처음으로"><svg viewBox="0 0 30 44" aria-hidden="true"><path pathLength="1" d="M15 3.5a5.5 5.5 0 1 1 0 11a5.5 5.5 0 1 1 0-11ZM10 17.5h10l1.5 11h-13ZM5 28.5h20M7 28.5v11M23 28.5v11M3.5 39.5h23"/></svg></a>
+  <button class="menu" type="button" aria-label="막 목록 열기" aria-expanded="false" aria-controls="nvm"><span></span><span></span><span></span><span></span></button>
+  <nav class="hdr label" aria-label="바로가기"><a href="https://peanutboi710.github.io/">큐시트 버전</a><a class="apply" href="#" data-go="7">연락하기 <span class="arw" aria-hidden="true">→</span></a></nav>
+  <nav class="rail" aria-label="막"><a href="#" data-go="0"><i></i><em>서막</em></a><a href="#" data-go="1"><i></i><em>무대 장치</em></a><a href="#" data-go="2"><i></i><em>지면</em></a><a href="#" data-go="3"><i></i><em>서명</em></a><a href="#" data-go="4"><i></i><em>전환</em></a><a href="#" data-go="5"><i></i><em>뼈대</em></a><a href="#" data-go="6"><i></i><em>크레딧</em></a><a href="#" data-go="7"><i></i><em>커튼콜</em></a></nav>
+</div>
+<div class="nvs" aria-hidden="true"></div>
+<nav class="nvm" id="nvm" aria-label="막 목록"><a href="#" data-go="0"><b>판 00</b><em>서막</em></a><a href="#" data-go="1"><b>판 01</b><em>무대 장치</em></a><a href="#" data-go="2"><b>판 02</b><em>지면</em></a><a href="#" data-go="3"><b>판 03</b><em>서명</em></a><a href="#" data-go="4"><b>판 04</b><em>전환</em></a><a href="#" data-go="5"><b>판 05</b><em>뼈대</em></a><a href="#" data-go="6"><b>판 06</b><em>크레딧</em></a><a href="#" data-go="7"><b>판 07</b><em>커튼콜</em></a></nav>
+
+<div class="docks">
+  <div class="dock dock-paper" id="dockPaper" data-from="99998" data-to="99999" hidden></div>
+  <div class="dock dock-side" id="dockScene" data-from="945" data-to="1040">
+    <div class="demo" data-demo="scene">
+      <p class="demo-cap">원본 coffeeDive · laptopBoot · peelOff 그대로</p>
+      <div class="scn">
+        <div class="scn-view" data-view="desk"><p class="scn-title">책상</p><p class="scn-sub">물건을 눌러 장면을 바꿔 보세요</p></div>
+        <div class="scn-row">
+          <button type="button" data-go="coffee"><img src="assets/desk/mug-large.webp" alt="">커피잔</button>
+          <button type="button" data-go="laptop"><img src="assets/desk/laptop.webp" alt="">노트북</button>
+          <button type="button" class="postit" data-go="peel">떼어 보세요</button>
+        </div>
+        <label class="scn-switch"><input type="checkbox" checked> 연출 켜기</label>
+      </div>
+    </div>
+  </div>
+  <div class="dock dock-side dock-plan" id="dockPlan" data-from="1245" data-to="1318">
+    <div class="demo plan-demo">
+      <svg class="plan" viewBox="0 0 640 420" role="img" aria-label="내Law남불 프론트 구조 평면도">
+        <g class="pl-stage"><path d="M40 330 Q320 360 600 330"/><path d="M60 330V70h520v260"/><path class="cl" d="M320 50V380"/><text x="326" y="48">CL</text></g>
+        <g class="pl-box" style="--d:.1s"><rect x="250" y="88" width="140" height="52"/><text x="320" y="112">라우터</text><text class="s" x="320" y="128">마지막 이동만 그림</text></g>
+        <g class="pl-box" style="--d:.25s"><rect x="90" y="170" width="150" height="52"/><text x="165" y="194">상태별 화면 표</text><text class="s" x="165" y="210">screenByStatus</text></g>
+        <g class="pl-box" style="--d:.4s"><rect x="400" y="170" width="150" height="52"/><text x="475" y="194">연출 스위치</text><text class="s" x="475" y="210">motion.js 한 곳</text></g>
+        <g class="pl-box" style="--d:.55s"><rect x="90" y="252" width="150" height="52"/><text x="165" y="276">화면별 코드 분할</text><text class="s" x="165" y="292">필요한 화면만 받기</text></g>
+        <g class="pl-box" style="--d:.7s"><rect x="400" y="252" width="150" height="52"/><text x="475" y="276">테스트 69개 파일</text><text class="s" x="475" y="292">node --test</text></g>
+        <g class="pl-link"><path d="M320 140V160H165V170M320 160H475V170M165 222V252M475 222V252"/></g>
+        <g class="pl-dim"><path d="M60 392H580"/><path d="M60 386v12M580 386v12"/><text x="320" y="410">순수 JS 약 2만 7천 줄 · 프레임워크 0개</text></g>
+      </svg>
+    </div>
+  </div>
+  <div class="split" id="split" hidden aria-hidden="true">
+    <div class="half l"></div>
+    <div class="half r"></div>
+  </div>
+</div>
+
+<main class="copies">
+  <section class="copy" id="copy-0" data-from="0" data-to="48">
+    <div class="col-head"><h1 class="lead"><span class="ln"><i>관객이 보는 쪽을</i></span><span class="ln"><i>만듭니다</i></span></h1></div>
+    <p class="tag">판 00 · 서막</p>
+    <div class="col-stand"><p class="stand">무대 조연출로 공연을 올리다 개발자가 됐습니다. 판결 체험 서비스 내Law남불의 화면 대부분을 프레임워크 없이 직접 만들었습니다.</p><a class="cta" href="#" data-go="1"><span class="face">무대 보기 <span class="arw" aria-hidden="true">↓</span></span><span class="flood" aria-hidden="true"><span class="face">무대 보기 <span class="arw">↓</span></span></span></a></div>
+  </section>
+  <section class="copy" id="copy-1" data-from="168" data-to="262">
+    <div class="col-head"><h2 class="beat"><span class="ln"><i>대사 한 줄도</i></span><span class="ln"><i>무대 위에서</i></span></h2></div>
+    <p class="tag">판 01 · 무대 장치</p>
+    <div class="col-stand"><p class="stand">판결 체험은 여섯 막짜리 무대입니다. 화면이 막을 고르면 캐릭터가 대본 키를 따라 자세와 대사를 바꿉니다. 무대 엔진 stage.js를 직접 짰습니다.</p></div>
+  </section>
+  <section class="copy" id="copy-2" data-from="362" data-to="438">
+    <div class="col-head"><h2 class="beat"><span class="ln"><i>종이는</i></span><span class="ln"><i>종이처럼 넘어간다</i></span></h2></div>
+    <p class="tag">판 02 · 지면</p>
+    <div class="col-stand"><p class="stand">사건 목록은 신문 1면입니다. 면을 고르면 지금 지면을 본뜬 한 장이 왼쪽 가장자리를 축으로 넘어가고, 기사를 누르면 제목이 다음 화면의 큰 제목 자리로 커집니다.</p></div>
+  </section>
+  <section class="copy" id="copy-3" data-from="672" data-to="770">
+    <div class="col-head"><h2 class="beat" aria-label="되돌릴 수 없는 서명의 순간"><span class="ln" aria-hidden="true"><i>되돌릴 수 없는</i></span><span class="ln" aria-hidden="true"><i><span class="script">서명</span>의 순간</i></span></h2></div>
+    <p class="tag">판 03 · 서명</p>
+    <div class="col-stand"><p class="stand">최종 판결은 고칠 수 없습니다. 그 무게를 닉네임 서명으로 보이게 했습니다. 이름을 읽히지 않는 한 획으로 바꾸고, 같은 이름은 늘 같은 서명이 됩니다.</p></div>
+  </section>
+  <section class="copy" id="copy-4" data-from="945" data-to="1040">
+    <div class="col-head"><h2 class="beat"><span class="ln"><i>장면이 바뀌는</i></span><span class="ln"><i>순간까지</i></span></h2></div>
+    <p class="tag">판 04 · 전환</p>
+    <div class="col-stand"><p class="stand">무대에서 하던 일이 암전 중 장면 전환이었습니다. 방금 가까이 본 사이에 배우가 자리를 옮긴 것처럼, 내Law남불의 전환도 보이지 않는 사이에 끝납니다. 모든 연출은 한 파일(motion.js)을 봅니다.</p></div>
+  </section>
+  <section class="copy" id="copy-5" data-from="1245" data-to="1318">
+    <div class="col-head"><h2 class="beat"><span class="ln"><i>보이지 않는</i></span><span class="ln"><i>뼈대</i></span></h2></div>
+    <p class="tag">판 05 · 뼈대</p>
+    <div class="col-stand"><p class="stand">프레임워크 없이 History API 라우터를 짰습니다. 빠르게 연속으로 옮기면 마지막 이동만 그리고, 서버가 알려 주는 상태에 맞는 화면으로 보냅니다.</p></div>
+  </section>
+  <section class="copy" id="copy-6" data-from="1425" data-to="1515">
+    <div class="col-head"><h2 class="beat"><span class="ln"><i>무대에</i></span><span class="ln"><i>새긴 것</i></span></h2></div>
+    <p class="tag">판 06 · 크레딧</p>
+    <div class="col-stand"><a class="cta" href="https://peanutboi710.github.io/"><span class="face">무대 뒤, 큐시트 버전 <span class="arw" aria-hidden="true">→</span></span><span class="flood" aria-hidden="true"><span class="face">무대 뒤, 큐시트 버전 <span class="arw">→</span></span></span></a></div>
+  </section>
+  <section class="copy final" id="copy-7" data-from="1725" data-to="99999">
+    <p class="ft-tag"><span class="ln"><i>끝까지 봐 주셔서</i></span><span class="ln"><i>감사합니다</i></span></p>
+    <p class="ft-meta l"><a href="mailto:figaro0928@gmail.com">figaro0928@gmail.com</a>
+<a href="https://github.com/peanutboi710">github.com/peanutboi710</a></p>
+    <p class="ft-meta r"><a href="https://github.com/prgrms-aibe-devcourse/AIBE7_FinalProject_Team2">AIBE7_FinalProject_Team2</a>
+© 2026 김해송</p>
+  </section>
+</main>
+
+<div class="ft-frame" id="ftFrame" aria-hidden="true"><svg class="ft-box"><rect/></svg><i class="ft-st" data-c="a"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></i><i class="ft-st" data-c="b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></i><i class="ft-st" data-c="c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></i><i class="ft-st" data-c="d"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg></i></div>
+<p class="boot-note" id="bootNote">무대를 준비하는 중<b>조각상은 코드로 그린 대역입니다</b></p>
+
+<script type="module" src="js/main.js?v=20261122e"></script>
+</body>
+</html>
